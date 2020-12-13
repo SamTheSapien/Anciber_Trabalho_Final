@@ -51,7 +51,7 @@ systemctl enable mariadb.service
 echo '======================='
 echo 'Configuring Database'
 echo '======================='
-mysql -u root --password=$password -Bse "DROP DATABASE IF EXISTS cakephp;CREATE DATABASE cakephp;CREATE USER 'cakephpuser'@'localhost' IDENTIFIED BY 'c@k3_Us3r_p@ssw0rd';GRANT ALL ON cakephp.* TO 'cakephpuser'@'localhost' WITH GRANT OPTION;FLUSH PRIVILEGES;EXIT;"
+mysql -u root --password=$password -Bse "DROP DATABASE IF EXISTS cakephp;CREATE DATABASE cakephp;DROP USER IF EXISTS 'cakephpuser'@'localhost';CREATE USER 'cakephpuser'@'localhost' IDENTIFIED BY 'c@k3_Us3r_p@ssw0rd';GRANT ALL ON cakephp.* TO 'cakephpuser'@'localhost' WITH GRANT OPTION;FLUSH PRIVILEGES;EXIT;"
 mysql -u root --password=$password < ./database_without_foreignkeys.sql
 #mysql -u root --password=$password < ./setup_database.sql
 systemctl start mariadb
