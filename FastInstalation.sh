@@ -52,7 +52,8 @@ echo '======================='
 echo 'Configuring Database'
 echo '======================='
 mysql -u root --password=$password -Bse "DROP DATABASE IF EXISTS cakephp;CREATE DATABASE cakephp;CREATE USER 'cakephpuser'@'localhost' IDENTIFIED BY 'c@k3_Us3r_p@ssw0rd';GRANT ALL ON cakephp.* TO 'cakephpuser'@'localhost' WITH GRANT OPTION;FLUSH PRIVILEGES;EXIT;"
-mysql -u root --password=$password < ./setup_database.sql
+mysql -u root --password=$password < ./database_without_foreignkeys.sql
+#mysql -u root --password=$password < ./setup_database.sql
 systemctl start mariadb
 echo '======================='
 echo 'Installing adminer for easier manipulation of database'
@@ -63,10 +64,22 @@ systemctl reload apache2
 echo '======================='
 echo 'Adminer in: https://127.0.0.1/adminer/'
 echo '======================='
+echo '======================='
+echo 'Installing Python Dependencies'
+echo '======================='
+./FastPython.sh
+echo '======================='
 echo 'Creating project'
 echo '======================='
 mkdir /var/www/cakephp
-cp ./cakephp /var/www/cakephp
+#Compress
+#O FICHEIRO PYTHON TEM DE ESTAR NA DIRETORIA DO WWW ROOT DO CAKE - cria diretoria scans na webroot
+#cp scaner.py scansDefinitions.py sqlConnector.py /var/www/cakephp/app/webroot
+#tar -czvf Samuel_ProjectoFinalAnciber.tar.gz ./cakephp
+tar -xzvf Samuel_ProjectoFinalAnciber.tar.gz -C /var/www/
+#mete o script acessivel de qualquer lado
+chmod +x /var/www/cakephp/app/webroot/scanner.py
+ln /var/www/cakephp/app/webroot/scanner.py /usr/local/bin/scanner.py
 #cd /var/www/cakephp
 #composer create-project --prefer-dist cakephp/app
 #cd /var/www/cakephp/app/
@@ -84,4 +97,5 @@ echo 'Deploying server'
 echo '======================='
 cd /var/www/cakephp/app/bin/
 ./cake server
-echo 'Visit http://localhost:8765/scan'
+echo 'Visit http://localhost:8765/'
+
