@@ -95,7 +95,7 @@ systemctl reload apache2
 echo '======================='
 echo 'Deploying server'
 echo '======================='
-python3 /var/www/cakephp/app/webroot/scanner.py
+nohup python3 /var/www/cakephp/app/webroot/scanner.py &
 cd /var/www/cakephp/app/bin/
 ./cake server
 echo 'Visit http://localhost:8765/'
