@@ -28,5 +28,5 @@ CREATE TABLE `scan` (
   `comandline` varchar(300) DEFAULT 'Unknow',
   `file` mediumblob NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
