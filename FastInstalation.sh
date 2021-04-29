@@ -12,15 +12,6 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
 mv composer.phar /usr/local/bin/composer
 echo '======================='
-echo 'Installing apache'
-echo '======================='
-apt install apache2
-echo '======================='
-echo 'Starting Apache server'
-echo '======================='
-systemctl start apache2.service
-systemctl enable apache2.service
-echo '======================='
 echo 'Instaling mariaDb'
 echo '======================='
 apt install mariadb-server mariadb-client
