@@ -7,6 +7,9 @@ import os
 nm = nmap.PortScanner() # instantiate nmap.PortScanner object
 nmY = nmap.PortScannerYield() #Continuo
 sql = conn.sql_Connector()
+scandir = '/' + 'scans'
+if not os.path.exists(scandir):
+    os.makedirs(scandir)
 
 def create_file(name):
     f = open(name, "w")
@@ -15,13 +18,8 @@ def create_file(name):
 def end_file(f):
     f.close()
 
-#for progressive_result in nmY.scan('192.168.1.0/24', '22-25'):
-#for progressive_result in nmY.scan('192.168.1.0/24',arguments='-sn -T5'):
-#   print(progressive_result)
-# nm.scan('127.0.0.1', '22-443') # scan host 127.0.0.1, ports from 22 to 443
-# nm.command_line() # get command line used for the scan : nmap -oX - -p 22-443 127.0.0.1
-# nm.scaninfo() # get nmap scan informations {'tcp': {'services': '22-443', 'method': 'connect'}}
-# nm.all_hosts() # get all hosts that were scanned
+def last_id():
+    return sql.last_id()
 
 def convertToBinaryData(name):
     with open(name, 'r') as file:
@@ -29,16 +27,17 @@ def convertToBinaryData(name):
     return binaryData
 
 def fastScanComputer(ip,name,desc):
+    global scandir
     nm.scan(ip,arguments=' -sV -sC -O -T5')
     comandline="Command Line: %s\n" % nm.command_line()
     saveCSV(nm)
     print(comandline)
-    f = create_file(name)
+    f = create_file(os.getcwd() + scandir + '/' + name)
     f.write(comandline)
     hosts,ports = complet_report(nm,f)
     end_file(f)
     descricao = desc
-    filepath=os.getcwd()+'/'+name
+    filepath = os.getcwd() + scandir + '/' + name
     strings = convertToBinaryData(filepath)
     scanid = sql.insert_scan(descricao,nm.command_line(),strings)
     i=0
@@ -46,25 +45,28 @@ def fastScanComputer(ip,name,desc):
     for i in range(len(hosts)):
         host=hosts[i]
         print(host)
-        hid=sql.insert_hosts(scanid,host)
+        #hid=sql.insert_hosts(scanid,host)
+        hid = sql.insert_hosts(host)
         print(hid)
         hostid.append(hid)
         currentport=ports[i]
         for j in currentport:
-            sql.insert_ports(scanid,hostid[i],j)
+            #sql.insert_ports(scanid,hostid[i],j)
+            sql.insert_ports(j)
         i=i+1
 
 def fullScanComputer(ip,name,desc):
+    global scandir
     nm.scan(ip,arguments='-sV -sC -O -p- -T5')
     saveCSV(nm)
     comandline = "Command Line: %s\n" % nm.command_line()
     print(comandline)
-    f = create_file(name)
+    f = create_file(os.getcwd() + scandir + '/' + name)
     f.write(comandline)
     hosts,ports = complet_report(nm,f)
     end_file(f)
     descricao = desc
-    filepath = os.getcwd() + '/' + name
+    filepath = os.getcwd() + scandir + '/' + name
     strings = convertToBinaryData(filepath)
     scanid = sql.insert_scan(descricao, nm.command_line(), strings)
     i = 0
@@ -81,17 +83,18 @@ def fullScanComputer(ip,name,desc):
         i = i + 1
 
 def fastScanNetwork(ip,name,desc):
+    global scandir
     hosts=[]
     nm.scan(ip,arguments='-sn -T5')
     saveCSV(nm)
     comandline = "Command Line: %s\n" % nm.command_line()
     print(comandline)
-    f = create_file(name)
+    f = create_file(os.getcwd() + scandir + '/' + name)
     f.write(comandline)
     hosts = fast_report_network(nm,f)
     end_file(f)
     descricao = desc
-    filepath = os.getcwd() + '/' + name
+    filepath = os.getcwd() + scandir + '/' + name
     strings = convertToBinaryData(filepath)
     scanid = sql.insert_scan(descricao, nm.command_line(), strings)
     for i in range(len(hosts)):

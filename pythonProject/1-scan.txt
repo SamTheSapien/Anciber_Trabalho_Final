@@ -1,0 +1,10 @@
+Command Line: nmap -oX - -sV -sC -O -T5 192.168.1.250
+----------------------------------------------------
+Host : 192.168.1.250 ()
+State : up
+Operative System : Linux 2.6.32
+Kernel : cpe:/o:linux:linux_kernel:2.6.32
+----------
+Protocol : tcp
+port : 80	|	state : open	|	service : http	|	product : Apache httpd	|	version : 2.4.46	|	extra info : (Debian)
+----------------------------------------------------

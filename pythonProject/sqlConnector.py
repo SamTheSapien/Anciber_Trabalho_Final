@@ -27,12 +27,15 @@ class sql_Connector:
       print("Failed inserting BLOB data into MySQL table {}".format(error))
     return 1
 
-  def insert_hosts(self,scanid,vals):
+  #def insert_hosts(self, scanid, vals):
+  def insert_hosts(self,vals):
     try:
-      sql = "INSERT INTO host (idscan, host, opsystem, kernel, ports) VALUES (%d, %s, %s, %s, %s)"
+      #sql = "INSERT INTO host (idscan, host, opsystem, kernel, ports) VALUES (%d, %s, %s, %s, %s)"
+      sql = "INSERT INTO host (host, opsystem, kernel, ports) VALUES (%s, %s, %s, %s)"
       if (len(vals)==1):
         vals=[vals[0],'','','']
-      val2 = (scanid,vals[0],vals[1],vals[2],vals[3])
+      #val2 = (scanid, vals[0], vals[1], vals[2], vals[3])
+      val2 = (vals[0], vals[1], vals[2], vals[3])
       print(val2)
       self.mycursor.execute(sql, val2)
       print(self.mycursor.rowcount, "record inserted.")
@@ -41,13 +44,26 @@ class sql_Connector:
       print("Error: {}".format(error))
     return 1
 
-  def insert_ports(self,scanid,hostid,vals):
+  #def insert_ports(self, scanid, hostid, vals):
+  def insert_ports(self,vals):
     try:
-      sql = "INSERT INTO port (idscan, hostid, number, state, service, version, info) VALUES (%d,%d,%s,%s,%s,%s,%s)"
-      val2 = (scanid,hostid,vals[0],vals[1],vals[2],vals[3],vals[4])
+      #sql = "INSERT INTO port (idscan, hostid, number, state, service, version, info) VALUES (%d,%d,%s,%s,%s,%s,%s)"
+      sql = "INSERT INTO port (number, state, service, version, info) VALUES (%s,%s,%s,%s,%s)"
+      #val2 = (scanid, hostid, vals[0], vals[1], vals[2], vals[3], vals[4])
+      val2 = (vals[0],vals[1],vals[2],vals[3],vals[4])
       print(val2)
       self.mycursor.execute(sql, val2)
       print(self.mycursor.rowcount, "record inserted.")
       self.mydb.commit()
     except mysql.connector.Error as error:
       print("Error: {}".format(error))
+
+  def last_id(self):
+    try:
+      sql= "SELECT MAX(id) FROM scan"
+      self.mycursor.execute(sql)
+      records = self.mycursor.fetchall()
+      lastId=records[0][0]
+    except mysql.connector.Error as error:
+      print("Failed inserting BLOB data into MySQL table {}".format(error))
+    return lastId
