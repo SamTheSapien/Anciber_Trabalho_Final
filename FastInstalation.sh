@@ -51,7 +51,6 @@ echo 'Installing adminer for easier manipulation of database'
 echo '======================='
 apt install adminer
 a2enconf adminer.conf
-systemctl reload apache2
 echo '======================='
 echo 'Adminer in: https://127.0.0.1/adminer/'
 echo '======================='
@@ -82,7 +81,6 @@ echo 'Checking some last permissions'
 echo '======================='
 chown -R www-data:www-data /var/www/cakephp
 chmod -R 755 /var/www/cakephp
-systemctl reload apache2
 echo '======================='
 echo 'Deploying server'
 echo '======================='
